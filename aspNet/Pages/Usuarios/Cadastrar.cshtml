@@ -4,13 +4,85 @@
     ViewData["Title"] = "Cadastrar";
 }
 
-<h2>Cadastrar</h2>
+<div class="container">
+    <h2>Cadastrar</h2>
 
-<form>
-
-    <input type="text" name="Nome" value="@Model.usuario.Nome"/> <br/>
-    <input type="password" name="Senha" /> <br/>
-    <button>Enviar</button>
-
-</form>
-
+    <form onsubmit="return valida()">
+        <div class="form-group">
+            <label for="usuario.Nome">Nome</label>
+            <input type="text" name="usuario.Nome" value="@Model.usuario.Nome" class="form-control" placeholder="Nome" />
+            <label for="usuario.Email">Email</label>
+            <input type="text" name="usuario.Email" value="@Model.usuario.Email" class="form-control" placeholder="Email" />
+            <label for="usuario.Cpf">Cpf</label>
+            <input type="text" name="usuario.Cpf" value="@Model.usuario.Cpf" class="form-control" placeholder="Cpf" />
+            <label for="usuario.DataNascimento">Data de Nascimento</label>
+            <input type="date" name="usuario.DataNascimento" value="@Model.usuario.DataNascimento" class="form-control" placeholder="DataNascimento" />
+            <label for="usuario.Senha">Senha</label>
+            <input type="password" id="senha" name="usuario.Senha" class="form-control" placeholder="Senha" />
+            <label>Confirmação</label>
+            <input type="password" id="confirmacao" class="form-control" placeholder="Senha" />
+            <hr />
+            <label>CEP</label>
+            <input type="number" name="Cep" id="Cep" class="form-control" placeholder="CEP" />
+            <button class="btn" type="button" onclick="buscaEndereco()">Buscar</button>
+            <div class="collapse" id="collapseExample">
+                <div class="card card-body" id="ender">
+                    texto qualquer
+                </div>
+            </div>
+            <div class="collapse" id="collapseForm">
+                <label>Endereço</label>
+                <input type="text" name="usuario.Logradouro" id="logradouro" class="form-control" />
+                <label>Numero</label>
+                <input type="text" name="usuario.Numero" class="form-control" />
+                <label>Complemento</label>
+                <input type="text" name="usuario.Complemento" class="form-control" />
+                <label>Bairro</label>
+                <input type="text" name="usuario.Bairro" id="bairro" class="form-control" />
+                <label>Cidade</label>
+                <input type="text" name="usuario.Cidade" id="cidade" class="form-control" />
+                <label>UF</label>
+                <input type="text" name="usuario.Uf" id="uf" class="form-control" />
+            </div>
+            <hr />
+            <button class="btn btn-primary">Enviar</button>
+        </div>
+    </form>
+    <button type="button" onclick="$('#meudiv').load('/teste.html')">buscar</button>
+    <div id="meudiv"></div>
+</div>
+<script>
+    function buscaEndereco() {
+        let cep = document.querySelector("#Cep");
+        $.getJSON("https://viacep.com.br/ws/" + cep.value + "/json/",
+            function (resp) {
+                if (resp.erro) {
+                    // cep não encontrado
+                    document.querySelector("#ender").innerHTML = "Cep não encontrado";
+                    $('#collapseExample').collapse('show');
+                    $('#collapseForm').collapse('hide');
+                } else {
+                    // preenche os campos do endereço
+                    document.querySelector("#logradouro").value = resp.logradouro;
+                    document.querySelector("#bairro").value = resp.bairro;
+                    document.querySelector("#cidade").value = resp.localidade;
+                    document.querySelector("#uf").value = resp.uf;
+                    $('#collapseExample').collapse('hide');
+                    $('#collapseForm').collapse('show');
+                }
+            });
+    }
+    function valida() {
+        let senha = document.getElementById("senha");
+        let confirmacao = document.getElementById("confirmacao");
+        if (senha.value.length < 4) {
+            alert("A Senha deve ter pelo menos 4 caracteres");
+            return false;
+        }
+        if (senha.value != confirmacao.value) {
+            alert("A Senha e a confirmacao devem ser iguais");
+            return false;
+        }
+        return true;
+    }
+</script>

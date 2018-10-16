@@ -10,15 +10,14 @@ namespace aspNet.Pages.Usuarios
 {
     public class CadastrarModel : PageModel
     {
-        [BindProperty]
+        [BindProperty(SupportsGet = true)]
         public Usuario usuario { get; set; }
-        public void OnGet(String nome, String senha)
+        public void OnGet()
         {
             if (usuario == null)
                 usuario = new Usuario();
 
-            usuario.Nome = nome;
-            usuario.Senha = senha;
         }
+            
     }
 }
